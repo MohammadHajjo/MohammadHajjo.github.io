@@ -8560,29 +8560,35 @@
     observer.observe(document.body, { childList: true, subtree: true });
   });
     
-</script>
+// Function to replace text
+function overrideText(node) {
+  const elements = node 
+    ? node.querySelectorAll(".framer-text")
+    : document.querySelectorAll(".framer-text");
 
-function overrideText() {
-    document.querySelectorAll(".framer-text").forEach(el => {
-      if (el.textContent.trim() === "..🔍?") {
-        el.textContent = "Linux"; 
+  elements.forEach(el => {
+    if (el.textContent.trim() === "..🔍?") {
+      el.textContent = "Linux";
+    }
+  });
+}
+
+// Run once after DOM is loaded
+document.addEventListener("DOMContentLoaded", () => overrideText());
+
+// Observe changes in the DOM for dynamically added elements
+const observer = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.nodeType === 1) { // Only element nodes
+        overrideText(node);
       }
     });
-  }
-
-  // Run once after DOM is loaded
-  document.addEventListener("DOMContentLoaded", overrideText);
-
-  // Observe changes 
-  const observer = new MutationObserver(() => {
-    overrideText();
   });
+});
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-</script>
+// Start observing the whole body
+observer.observe(document.body, { childList: true, subtree: true });
 
 </body>
 
